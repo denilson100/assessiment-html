@@ -20,6 +20,8 @@ var memory_values = [];
 var memory_tile_ids = [];
 var tiles_flipped = 0;
 var jogadas = 0;
+// flag para logida de mostrar cartas. true mostra e false oculta
+var mostraCartas = true;
 
 var pause = 0;
 var count = 0;
@@ -28,11 +30,21 @@ var stoped = 0
 
 function newBoard() {
 	tiles_flipped = 0;
-  memory_array = _.shuffle(memory_array);
+	// embaralha o array apenas na primeira vez
+	if(mostraCartas == true){
+  	memory_array = _.shuffle(memory_array);
+	}
 
   var output = '';
   _.forEach(memory_array, function(memory_array_value, index) {
-    output += '<div id="tile_'+ index +'" onclick="memoryFlipTile(this,\''+ memory_array_value +'\')"></div>';
+		if(mostraCartas == false){
+			// pega uma string com as cartas viradas
+    	output += '<div id="tile_'+ index +'" onclick="memoryFlipTile(this,\''+ memory_array_value +'\')"></div>';
+		} else {
+			// pega uma string mostrando as cartas
+			output += '<div><img src="img' + memory_array_value + '.png"></div>';
+		}
+
   });
 
 	document.getElementById('memory_board').innerHTML = output;
@@ -77,6 +89,7 @@ function matchCards() {
 
 function isGameOver() {
   // Check to see if the whole board is cleared
+	mostraCartas = true;
   return tiles_flipped == memory_array.length;
 }
 
@@ -100,47 +113,60 @@ function mostraBotao() {
 
 function timer() {
   count = count+1;
-  document.getElementById("timer").innerHTML=count + " secs";
+  document.getElementById("timer").innerHTML = count + " secs";
 	document.getElementById("div").style.display = 'none';
+	// logica para mostrar ou nao as cartas. Antes de 2 seg mostra. Passou de 2 seg seta variavel e
+	// inicia não mostrando mais.
+	if(mostraCartas == true){
+		if(count == 2){
+			mostraCartas = false;
+			newBoard();
+		}
+	}
+	// var div = $("#timer");
+  //   div.animate({left: '50px'}, "slow");
+  //   div.animate({fontSize: '3em'}, "slow");
+
 }
 
 function StopFunction() {
   clearInterval(counter);
-  window.count=0;
-  window.pause=0;
-  document.getElementById("pause").innerHTML="Pause"
+  window.count = 0;
+  window.pause = 0;
+  document.getElementById("pause").innerHTML = "Pause"
   window.stoped=1
-  document.getElementById("timer").innerHTML=count + " secs";
+  document.getElementById("timer").innerHTML = count + " secs";
+
 }
 
 function ReStartFunction() {
   if (counter) {
     clearInterval(counter);
-    window.pause=0;
-    window.count=0;
-    window.stoped=0
+    window.pause = 0;
+    window.count = 0;
+    window.stoped = 0
     window.counter=setInterval(timer, 1000);
-    count=count+1;
-    document.getElementById("pause").innerHTML="Pause"
-    document.getElementById("timer").innerHTML=count + " secs";
+    count = count+1;
+    document.getElementById("pause").innerHTML = "Pause"
+    document.getElementById("timer").innerHTML = count + " secs";
 
   }
 }
 
 function PauseFunction() {
-  if (stoped==0) {
-    if (pause==0) {
+  if (stoped == 0) {
+    if (pause == 0) {
       clearInterval(counter);
-      document.getElementById("pause").innerHTML="Resume"
-      pause=1;
+      document.getElementById("pause").innerHTML = "Resume"
+      pause = 1;
       return;
     }
 
-  if (pause==1) {
+  if (pause == 1) {
       window.counter=setInterval(timer, 1000);
-      document.getElementById("timer").innerHTML=count + " secs";
-      document.getElementById("pause").innerHTML="Pause"
-      pause=0;
+      document.getElementById("timer").innerHTML = count + " secs";
+      document.getElementById("pause").innerHTML = "Pause"
+      pause = 0;
       return;
     }
   }
@@ -154,22 +180,30 @@ function cardsDoNotMatch() {
 // Retorna quando clica
 function flipCard(tile, value) {
   tile.style.background = '#FFF';
-  tile.innerHTML = '<img src="img/img' + value +'.png" >';
+  tile.innerHTML = '<img id="img" src="img' + value +'.png" >';
+
 }
 
-function mostrarTodas(tile, value){
-	tile.style.background = '#FFF';
-	tile.innerHTML = '<img src="img/img' + value +'.png" >';
+function mostrarTodas(){
+	isOneCardFlipped();
 }
 
 function flipCardBack() {
   // Flip the 2 tiles back over
   var tile_1 = document.getElementById(memory_tile_ids[0]);
   var tile_2 = document.getElementById(memory_tile_ids[1]);
-  tile_1.style.background = '#FF3399';
+  tile_1.style.background = '#999';
   tile_1.innerHTML = "";
-  tile_2.style.background = '#FF3399';
+  tile_2.style.background = '#999';
   tile_2.innerHTML = "";
+
+	// animação se nao acertar
+	$("#" + memory_tile_ids[0]).fadeTo("slow", 0.5);
+	$("#" + memory_tile_ids[0]).fadeTo("slow", 1.0);
+
+	$("#" + memory_tile_ids[1]).fadeTo("slow", 0.5);
+	$("#" + memory_tile_ids[1]).fadeTo("slow", 1.0);
+
 
   // Clear both arrays
   memory_values = [];
@@ -181,6 +215,7 @@ function memoryFlipTile(tile, value) {
 	document.getElementById('quantidadeJogadas').innerHTML = 'Jogadas: ' + jogadas;
 	if (canFlipCard(tile)) {
 		flipCard(tile, value);
+
     if (areNoCardsFlipped()) {
 			setCardAsFlipped(tile, value);
 		} else if(isOneCardFlipped()) {

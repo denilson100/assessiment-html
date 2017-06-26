@@ -8,7 +8,7 @@ div #memory_board{
 }
 
 div #memory_board > div {
-  background: #FF3399;
+  background: #999;
   border: #000 1px solid;
   width: 20%;
   height: 150px;
@@ -56,4 +56,19 @@ img {
   padding: 10px;
   display: block;
   float: left;
+}
+
+.flip {
+    height: 199px;
+    width: 300px;
+    margin: 0 auto;
+}
+.flip img {
+    width: 300px;
+    height: auto;
+}
+.flip .back {
+    background: #2184cd;
+    color: #fff;
+    text-align: center;
 }
