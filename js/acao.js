@@ -70,7 +70,6 @@ function matchCards() {
 }
 
 function isGameOver() {
-  // Check to see if the whole board is cleared
 	mostraCartas = true;
   return cartas_viradas == memory_array.length;
 }
@@ -171,20 +170,20 @@ function flipCardBack() {
   // Flip the 2 tiles back over
   var tile_1 = document.getElementById(id_carta_memoria[0]);
   var tile_2 = document.getElementById(id_carta_memoria[1]);
-  tile_1.style.background = '#999';
+  tile_1.style.background = '#B2DFDB';
   tile_1.innerHTML = "";
-  tile_2.style.background = '#999';
+  tile_2.style.background = '#B2DFDB';
   tile_2.innerHTML = "";
 
 	// animação se nao acertar
-	$("#" + id_carta_memoria[0]).fadeTo("slow", 0.5);
+	$("#" + id_carta_memoria[0]).fadeTo("slow", 0.2);
 	$("#" + id_carta_memoria[0]).fadeTo("slow", 1.0);
 
-	$("#" + id_carta_memoria[1]).fadeTo("slow", 0.5);
+	$("#" + id_carta_memoria[1]).fadeTo("slow", 0.2);
 	$("#" + id_carta_memoria[1]).fadeTo("slow", 1.0);
 
 
-  // Clear both arrays
+  // limpar array
   valor_memoria = [];
   id_carta_memoria = [];
 }
